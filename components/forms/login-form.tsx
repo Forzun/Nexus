@@ -27,6 +27,7 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
   email: z.email(),
@@ -39,6 +40,12 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [loading , SetLoading] = useState(false);
   const router = useRouter();
+
+  const signIn = async () => {
+    await authClient.signIn.social({
+        provider: "google"
+    })
+}
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -123,7 +130,7 @@ export function LoginForm({
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? <Loader2 className="size-4 animate-spin" /> : "Login"}
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button type="button" onClick={signIn} variant="outline" className="w-full">
                     Login with Google
                   </Button>
                 </div>

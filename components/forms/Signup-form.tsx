@@ -26,7 +26,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
   email: z.email(),
@@ -52,18 +53,28 @@ export function SignUpForm({
     },
   });
 
+  const signIn = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+    });
+  };
+
   const submitHandler = async (value: z.infer<typeof formSchema>) => {
     try {
       SetLoading(true);
 
-      if(value.password !== value.confirmPassword){ 
+      if (value.password !== value.confirmPassword) {
         toast.error("Confirm password should be same as password");
-        return; 
+        return;
       }
 
-      const response = await signUpUser(value.email, value.password, value.name);
+      const response = await signUpUser(
+        value.email,
+        value.password,
+        value.name
+      );
       if (response.success) {
-        console.log(response)
+        console.log(response);
         toast.success(response.message);
         router.push("/login");
       } else {
@@ -174,7 +185,7 @@ export function SignUpForm({
                       "Sign Up"
                     )}
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button type="button" onClick={signIn} variant="outline" className="w-full">
                     Sign Up with Google
                   </Button>
                 </div>
