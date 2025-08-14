@@ -26,6 +26,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const formSchema = z.object({
   email: z.email(),
@@ -39,6 +40,7 @@ export function SignUpForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [loading, SetLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,10 +55,17 @@ export function SignUpForm({
   const submitHandler = async (value: z.infer<typeof formSchema>) => {
     try {
       SetLoading(true);
+
+      if(value.password !== value.confirmPassword){ 
+        toast.error("Confirm password should be same as password");
+        return; 
+      }
+
       const response = await signUpUser(value.email, value.password, value.name);
       if (response.success) {
         console.log(response)
         toast.success(response.message);
+        router.push("/login");
       } else {
         toast.error(response.message);
       }

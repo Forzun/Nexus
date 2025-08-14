@@ -26,14 +26,15 @@ import { useState } from "react";
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
-  email: z.email(),
   password: z.string().min(8),
+  confirmPassword: z.string().min(8)
 });
 
-export function LoginForm({
+export function ResetPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -43,20 +44,32 @@ export function LoginForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
       password: "",
+      confirmPassword: ""
     },
   });
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const submitHandler = async (value: z.infer<typeof formSchema>) => {
       try{ 
         SetLoading(true);
-        const response = await signInUser(value.email , value.password);
-        if(response.success){ 
-          toast.success(response.message);
-          router.push("/dashboard");
+
+        if(value.password !== value.confirmPassword){ 
+            toast.error("Confirm password should be same as password");
+            return;
+        }
+
+        const {error} = await authClient.resetPassword({ 
+          newPassword: value.password, 
+          token: token ?? " "
+        })
+        if(!error){ 
+          toast.success("Password reset sucessfully");
+          router.push("/login");
         }else{ 
-          toast.error(response.message)
+          toast.error(error.message)
         } 
       }catch(error){ 
         console.log(error);
@@ -82,33 +95,11 @@ export function LoginForm({
                 <div className="grid gap-3">
                   <FormField
                     control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input placeholder="john@231@gmail.com" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <FormField
-                    control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center">
                           <FormLabel>Password</FormLabel>
-                          <a
-                            href="/forget-password"
-                            className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                          >
-                            Forgot your password?
-                          </a>
                         </div>
                         <FormControl>
                           <Input type="password" placeholder="*******" {...field} />
@@ -116,15 +107,32 @@ export function LoginForm({
                         <FormDescription></FormDescription>
                         <FormMessage />
                       </FormItem>
+                      
+                    )}
+                  />
+                </div>
+                <div className="grid gap-3">
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center">
+                          <FormLabel>confirm password</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Input type="password" placeholder="*******" {...field} />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                      
                     )}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="size-4 animate-spin" /> : "Login"}
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    Login with Google
+                    {loading ? <Loader2 className="size-4 animate-spin" /> : "ResetPassword"}
                   </Button>
                 </div>
               </div>
