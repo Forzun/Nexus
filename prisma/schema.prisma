@@ -22,7 +22,8 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now())
   sessions      Session[]
-  accounts      Account[]
+  accounts      Account[] 
+  notebook      Notebook[]
 }
 
 model Session {
@@ -61,4 +62,25 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
+}
+
+
+model Notebook {
+  id    String @id @default(uuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+   id         String   @id @default(uuid())
+  title      String
+  content    Json
+  notebookId String   
+  notebook   Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
