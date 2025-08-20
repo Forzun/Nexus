@@ -1,10 +1,24 @@
-import LogOut from "@/components/LogOut";
 import PageWrapper from "@/components/page-wrapper";
+import { getNotebooks } from "@/server/notebook";
 
-export default function Dashboard(){ 
+export default async function Dashboard(){ 
+
+    const notebooks = await getNotebooks();
+
+    console.log(notebooks)
 
     return<PageWrapper breadcrumbs={[{label: "Dashboard" , href:"/dashboard"}]}>
-        <h1>Dashboard</h1>
-        <LogOut />
+        <h1>Notebooks</h1>
+         
+         {notebooks.sucess && 
+            notebooks?.data?.map((notebook) => ( 
+                <div key={notebook.id}>{notebook.name}</div>
+            ))
+         }
+
+        {notebooks.sucess && notebooks?.data?.length == 0 && ( 
+            <div>No notebooks found</div>
+        )}
+
     </PageWrapper>
 }

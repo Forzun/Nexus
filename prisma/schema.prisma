@@ -66,9 +66,9 @@ model Verification {
 
 
 model Notebook {
-  id    String @id @default(uuid())
+  id        String   @id @default(cuid())
   name      String
-  userId    String
+  userId    String   
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   notes     Note[]
   createdAt DateTime @default(now())
@@ -76,10 +76,10 @@ model Notebook {
 }
 
 model Note {
-   id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   title      String
   content    Json
-  notebookId String   
+  notebookId String  
   notebook   Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
