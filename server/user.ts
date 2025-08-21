@@ -14,7 +14,7 @@ export const signInUser = async (email: string , password: string) => {
     }catch(error){ 
         const e = error as Error; 
         return {success: false , message: e.message || "failed to sign in"}
-    }
+}
 }
 
 export const signUpUser = async (email: string , password: string , name: string) => { 
