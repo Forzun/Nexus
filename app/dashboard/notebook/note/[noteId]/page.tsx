@@ -1,12 +1,11 @@
-import TipEditor from "@/components/TipEditor";
 import PageWrapper from "@/components/page-wrapper";
-import Tiptap from "@/components/righ-text-editor";
+import RichTextEditor from "@/components/righ-text-editor";
 import { getNoteById } from "@/server/note";
+import { JSONContent } from "@tiptap/react";
 
 type NoteProps = Promise<{
   noteId: string;
 }>;
-
 
 export default async function Notepage({ params }: { params: NoteProps }) {
   const { noteId } = await params;
@@ -17,6 +16,9 @@ export default async function Notepage({ params }: { params: NoteProps }) {
     <PageWrapper
       breadcrumbs={[
         { label: "Dashboard", href: "/dashboard" },
+        {label: note.data?.notebook.name ?? "Notebook", 
+          href: `/dashboard/notebook/${note.data?.notebook.id}`
+        },
         {
           label: note.data?.title ?? "Note",
           href: `/dashboard/note/${noteId}`,
@@ -24,7 +26,10 @@ export default async function Notepage({ params }: { params: NoteProps }) {
       ]}
     >
       <div>{note.data?.title}</div>
-      <TipEditor />
+      <RichTextEditor
+        content={note.data?.content as JSONContent[]}
+        noteId={noteId}
+      />
     </PageWrapper>
   );
 }

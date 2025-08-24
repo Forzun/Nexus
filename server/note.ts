@@ -28,6 +28,9 @@ export const getNoteById = async (id: string) => {
             where: { 
                 id: id
             }, 
+            include:{
+                notebook: true
+            }
         })
 
         if(!note){
@@ -41,14 +44,14 @@ export const getNoteById = async (id: string) => {
     }
 }
 
-export const updateNote = async (id: string , value: {title: string}) => { 
+export const updateNote = async (id: string , value: {content: any}) => {
     try{ 
         const note = await prisma.note.update({ 
             where: { 
                 id: id
             },
             data: { 
-                title: value.title
+                content: value.content
             }
         })
         return {sucess: true , message: "note updated sucessfully"}
