@@ -26,7 +26,7 @@ export default async function Notepage({ params }: { params: NoteProps }) {
       ]}
     >
       <div>{note.data?.title}</div>
-      <RichTextEditor
+      <RichTextEditor 
         content={note.data?.content as JSONContent[]}
         noteId={noteId}
       />

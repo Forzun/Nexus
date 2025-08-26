@@ -21,8 +21,9 @@ interface NotebookCardProps {
 
 export default function NotebookCard({notebook}: NotebookCardProps) {
   const [isDelete , setIsDelete] = useState(false);
+  const [isView , setIsView] = useState(false);
   const router = useRouter();
-    
+
   const handleDelete = async() => { 
       try{ 
         setIsDelete(true)
@@ -38,6 +39,11 @@ export default function NotebookCard({notebook}: NotebookCardProps) {
       }
   }
 
+  const viewhandler = async() => { 
+      setIsView(true);   
+      router.push(`/dashboard/notebook/note/${notebook.notes[notebook.notes.length -1].id}`)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -49,10 +55,10 @@ export default function NotebookCard({notebook}: NotebookCardProps) {
         <p>{notebook.notes.length ?? 0} notes</p>
       </CardContent>
       <CardFooter className="flex gap-2 justify-end">
-        <Button variant={"outline"} >
-            View
+        <Button onClick={viewhandler} variant={"outline"} >
+            { isView ? <Loader2 className="size-4 animate-spin" /> : <p>View</p> }
         </Button>
-        <Button variant={"destructive"} onClick={handleDelete}>
+        <Button variant={"destructive"} disabled={isDelete} onClick={handleDelete}>
             { isDelete ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" /> }
         </Button>
       </CardFooter>

@@ -74,7 +74,6 @@ export function SignUpForm({
         value.name
       );
       if (response.success) {
-        console.log(response);
         toast.success(response.message);
         router.push("/login");
       } else {
