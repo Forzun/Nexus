@@ -7,16 +7,12 @@ import { Globe, Paperclip, Plus, Send } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import GetUser from "./getUser";
+import { Message } from "@/types/message";
 
 interface UseAutoResizeTextareaProps {
   minHeight: number;
   maxHeight?: number;
-}
-
-interface Message {
-  role: string;
-  content: string;
-  status?: "pending" | "accepted" | "rejected";
 }
 
 function useAutoResizeTextarea({
@@ -75,7 +71,7 @@ const AnimatedPlaceholder = ({ showSearch }: { showSearch: boolean }) => (
       transition={{ duration: 0.1 }}
       className="pointer-events-none w-[150px] text-sm absolute text-black/70 dark:text-white/70"
     >
-      {showSearch ? "Not available yet" : "Ask Skiper Ai..."}
+      {showSearch ? "Not available yet" : "Ask To Ai..."}
     </motion.p>
   </AnimatePresence>
 );
@@ -107,7 +103,13 @@ export default function AiInput() {
     }
   };
 
-  const [message, setMessage] = useState<Message[]>([]);
+  const [message, setMessage] = useState<Message[]>([
+    {
+      role: "assistant",
+      content: "Hi, I am an AI assistant. How can I help you today?",
+      status: "pending",
+    },
+  ]);
 
   const handleSubmit = () => {
     const correctMessage = `Rewrite the following in a formal and professional tone:\n\n${value}`;
@@ -130,7 +132,7 @@ export default function AiInput() {
   }, [imagePreview]);
 
   return (
-    <div className="w-full p-5 overflow-hidden h-[90vh]">
+    <div className="w-full p-3 overflow-hidden h-[90vh]">
       <motion.div
         initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -146,8 +148,8 @@ export default function AiInput() {
         <div
           className={`overflow-y-auto ${bottom ? "h-full" : null} no-scrollbar flex flex-col px-4 `}
         >
-          <div className="max-w-4xl w-full mx-auto flex flex-col gap-3 items-end justify-start p-2">
-            previous message
+          <div className="max-w-4xl w-full mx-auto flex flex-col gap-3 items-end justify-start ">
+            <GetUser setMessage={setMessage} user={message} />
           </div>
         </div>
         <div
