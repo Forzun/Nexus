@@ -7,7 +7,6 @@ export async function POST(req: NextRequest){
         console.log(text); 
 
         const response = await fetchFromOpenrouter(text); 
-        console.log(response); 
 
         if(!response){ 
             return NextResponse.json({sucess: false , message: "failed to fetch from ai"});
@@ -19,7 +18,7 @@ export async function POST(req: NextRequest){
         })
 
     }catch(error){  
-        return {sucess: false , message: "failed to create notebook"}
+        return NextResponse.json({sucess: false , message: "failed to fetch from ai"})
     }
 }
 

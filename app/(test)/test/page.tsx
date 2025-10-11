@@ -1,5 +1,4 @@
 import AiInput from "./components/Input";
-import AgentResponse from "./components/Input";
 
 export default function Home() {
   return (

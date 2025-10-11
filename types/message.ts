@@ -4,3 +4,8 @@ export interface Message {
     content: string;
     status?: "pending" | "accepted" | "rejected";
   }
+
+export interface FetchResponse { 
+  text:string
+}
+

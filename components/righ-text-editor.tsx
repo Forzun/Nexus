@@ -5,6 +5,7 @@ import {
   EditorContent,
   useEditorState,
   type JSONContent,
+  Editor,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
@@ -38,13 +39,15 @@ import {
   Subscript,
 } from "lucide-react";
 import { updateNote } from "@/server/note";
+import { useEffect } from "react";
 
 interface RichTextEditorProps {
   content?: JSONContent[];
   noteId?: string;
+  onReady?: (editor: Editor) => void;
 }
 
-const RichTextEditor = ({ content, noteId }: RichTextEditorProps) => {
+const RichTextEditor = ({ content, noteId, onReady }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [StarterKit, Document, Paragraph, Text],
     immediatelyRender: false,
@@ -54,7 +57,7 @@ const RichTextEditor = ({ content, noteId }: RichTextEditorProps) => {
     onUpdate: ({ editor }) => {
       if (noteId) {
         const content = editor.getJSON();
-        updateNote(noteId , {content})
+        updateNote(noteId, { content });
       }
     },
     content: content ?? {
@@ -160,6 +163,10 @@ const RichTextEditor = ({ content, noteId }: RichTextEditorProps) => {
     if (editorState?.isHeading3) return "H3";
     return "H1";
   };
+
+  useEffect(() => {
+    if (editor && onReady) onReady(editor);
+  }, [editor, onReady]);
 
   return (
     <div className="w-full max-w-7xl bg-card text-card-foreground rounded-lg overflow-hidden border">

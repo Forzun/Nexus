@@ -1,7 +1,9 @@
+import AiInput from "@/app/(test)/test/components/Input";
+import NotepageClient from "@/components/components/NotepageClient";
 import PageWrapper from "@/components/page-wrapper";
 import RichTextEditor from "@/components/righ-text-editor";
 import { getNoteById } from "@/server/note";
-import { JSONContent } from "@tiptap/react";
+import { JSONContent, Editor } from "@tiptap/react";
 
 type NoteProps = Promise<{
   noteId: string;
@@ -9,15 +11,15 @@ type NoteProps = Promise<{
 
 export default async function Notepage({ params }: { params: NoteProps }) {
   const { noteId } = await params;
-
   const note = await getNoteById(noteId);
 
   return (
     <PageWrapper
       breadcrumbs={[
         { label: "Dashboard", href: "/dashboard" },
-        {label: note.data?.notebook.name ?? "Notebook", 
-          href: `/dashboard/notebook/${note.data?.notebook.id}`
+        {
+          label: note.data?.notebook.name ?? "Notebook",
+          href: `/dashboard/notebook/${note.data?.notebook.id}`,
         },
         {
           label: note.data?.title ?? "Note",
@@ -25,11 +27,12 @@ export default async function Notepage({ params }: { params: NoteProps }) {
         },
       ]}
     >
-      <div>{note.data?.title}</div>
-      <RichTextEditor 
-        content={note.data?.content as JSONContent[]}
-        noteId={noteId}
-      />
+      <div className="flex gap-3">
+        <NotepageClient
+          noteId={noteId}
+          content={note.data?.content as JSONContent[]}
+        />
+      </div>
     </PageWrapper>
   );
 }

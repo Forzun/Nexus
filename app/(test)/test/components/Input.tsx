@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import GetUser from "./getUser";
 import { Message } from "@/types/message";
+import { Editor } from "@tiptap/react";
 
 interface UseAutoResizeTextareaProps {
   minHeight: number;
@@ -76,7 +77,13 @@ const AnimatedPlaceholder = ({ showSearch }: { showSearch: boolean }) => (
   </AnimatePresence>
 );
 
-export default function AiInput() {
+export default function AiInput({
+  nodeId,
+  editor,
+}: {
+  nodeId?: string;
+  editor?: Editor | undefined;
+}) {
   const [value, setValue] = useState("");
   const [bottom, setBottom] = useState(false);
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
@@ -106,7 +113,7 @@ export default function AiInput() {
   const [message, setMessage] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi, I am an AI assistant. How can I help you today?",
+      content: "Hello, I am an AI assistant. How can I help you today?",
       status: "pending",
     },
   ]);
@@ -132,7 +139,7 @@ export default function AiInput() {
   }, [imagePreview]);
 
   return (
-    <div className="w-full p-3 overflow-hidden h-[90vh]">
+    <div className="w-full relative p-3 overflow-hidden h-[90vh]">
       <motion.div
         initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -143,13 +150,13 @@ export default function AiInput() {
         }}
         layout
         style={{ justifyContent: bottom ? "end" : "flex-start" }}
-        className={`flex flex-col h-full md:pt-20 pt-10 relative`}
+        className={`flex flex-col h-full relative`}
       >
         <div
           className={`overflow-y-auto ${bottom ? "h-full" : null} no-scrollbar flex flex-col px-4 `}
         >
           <div className="max-w-4xl w-full mx-auto flex flex-col gap-3 items-end justify-start ">
-            <GetUser setMessage={setMessage} user={message} />
+            <GetUser setMessage={setMessage} user={message} editor={editor} />
           </div>
         </div>
         <div
