@@ -93,6 +93,7 @@ export default function AiInput({
   const [showSearch, setShowSearch] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [button, setButton] = useState(false);
 
   const handelClose = (e: any) => {
     e.preventDefault();
@@ -139,7 +140,9 @@ export default function AiInput({
   }, [imagePreview]);
 
   return (
-    <div className="w-full relative p-3 overflow-hidden h-[90vh]">
+    <div
+      className={`w-full relative p-3 overflow-hidden h-[90vh] ${button ? "max-w-2xl text-sm" : "max-w-4xl"}`}
+    >
       <motion.div
         initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -291,6 +294,9 @@ export default function AiInput({
                     )}
                   </AnimatePresence>
                 </button>
+                <button onClick={() => setButton(!button)}>
+                  <SquareHalf />
+                </button>
               </div>
               <div className="absolute right-3 bottom-3">
                 <button
@@ -313,3 +319,21 @@ export default function AiInput({
     </div>
   );
 }
+
+export const SquareHalf = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-8 h-8 bg-neutral-800/60 rounded-2xl p-1"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      stroke="#000000"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      d="M12 3.5v17M3 12c0-4.243 0-6.364 1.318-7.682C5.636 3 7.758 3 12 3c4.243 0 6.364 0 7.682 1.318C21 5.636 21 7.758 21 12c0 4.243 0 6.364-1.318 7.682C18.364 21 16.242 21 12 21c-4.243 0-6.364 0-7.682-1.318C3 18.364 3 16.242 3 12Z"
+    ></path>
+  </svg>
+);

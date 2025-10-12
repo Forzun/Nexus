@@ -36,7 +36,9 @@ export default function PageWrapper({
                       {breadcrumb.label}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  {index !== breadcrumbs.length - 1 ? <BreadcrumbSeparator/> : null}
+                  {index !== breadcrumbs.length - 1 ? (
+                    <BreadcrumbSeparator />
+                  ) : null}
                 </Fragment>
               ))}
             </BreadcrumbList>
