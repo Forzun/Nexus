@@ -5,7 +5,7 @@ import { updateNote } from "@/server/note";
 import { Message } from "@/types/message";
 import { Editor } from "@tiptap/react";
 import { Check, X } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 export default function GetUser({
   user,
@@ -19,27 +19,42 @@ export default function GetUser({
   noteId?: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const processedMessages = useRef(new Set<number>());
 
   useEffect(() => {
     const processMessage = async () => {
-      setLoading(true);
-      const assistantMessage = await fetchAiResponse(
-        user[user.length - 1].content
-      );
-      setMessage([
-        ...user,
-        { role: "assistant", content: assistantMessage, status: "pending" },
-      ]);
-      setLoading(false);
-      console.log(assistantMessage);
+      const lastUserMessageIndex = user.length - 1;
+      const lastMessage = user[lastUserMessageIndex];
+      if (
+        lastMessage?.role === "user" &&
+        !processedMessages.current.has(lastUserMessageIndex) &&
+        (user.length === lastUserMessageIndex + 1 ||
+          user[lastUserMessageIndex + 1]?.role !== "assistant")
+      ) {
+        processedMessages.current.add(lastUserMessageIndex);
+        setLoading(true);
+
+        try {
+          const assistantMessage = await fetchAiResponse(lastMessage.content);
+          console.log("AI Response:", assistantMessage);
+
+          setMessage((prev) => [
+            ...prev,
+            { role: "assistant", content: assistantMessage, status: "pending" },
+          ]);
+        } catch (error) {
+          console.error("Error fetching AI response:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
     };
+
     // processMessage();
-  }, [user]);
+  }, [user.length]); 
 
   const handleReject = (index: number) => {
-    const item = user[index];
-
     setMessage((prev) =>
       prev.map((item, id) =>
         id === index ? { ...item, status: "rejected" } : item
@@ -56,12 +71,10 @@ export default function GetUser({
       )
     );
 
-    console.log(editor)
     if (editor && item.role === "assistant") {
       editor.chain().focus().insertContent(item.content).run();
-      console.log(editor.getJSON());
-      // const content = editor.getJSON();
-      // if (noteId) updateNote(noteId, { content });
+      const content = editor.getJSON();
+      if (noteId) updateNote(noteId, { content });
     }
   };
 
@@ -70,11 +83,11 @@ export default function GetUser({
       {user.map((res, index) => (
         <div
           key={index}
-          onMouseEnter={() => setShowSpinner(true)}
-          onMouseLeave={() => setShowSpinner(false)}
+          onMouseEnter={() => setHoveredIndex(index)}
+          onMouseLeave={() => setHoveredIndex(null)}
           className={`flex ${res.role === "user" ? "justify-end" : "justify-start"} transition-all duration-300 ease-in-out`}
         >
-          <h1
+          <div
             className={`max-w-lg px-3 py-3 rounded-xl break-words whitespace-pre-wrap overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg ${
               res.role === "user"
                 ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -85,34 +98,60 @@ export default function GetUser({
                     : "bg-neutral-900 text-white hover:bg-neutral-900/80"
             }`}
           >
-            {res.content}
+            <p>{res.content}</p>
+
             {res.status === "pending" && res.role === "assistant" && (
-              <div>
-                {showSpinner && (
-                  <div className="flex gap-2 no-scrollbar items-start animate-in slide-in-from-bottom-1 fade-in duration-300">
-                    <Button
-                      onClick={() => handleAccept(index)}
-                      size="sm"
-                      className="bg-green-600/20 text-green-700 rounded-lg border-1 hover:bg-green-600/30 transition-all duration-200 ease-in-out transform hover:scale-105"
-                    >
-                      <Check className="w-4 h-4" />
-                      Accept
-                    </Button>
-                    <Button
-                      onClick={() => handleReject(index)}
-                      size="sm"
-                      className="bg-rose-600/20 text-rose-700 rounded-lg hover:bg-rose-600/30 transition-all duration-200 ease-in-out transform hover:scale-105"
-                    >
-                      <X className="w-4 h-4" />
-                      Reject
-                    </Button>
-                  </div>
-                )}
+              <div
+                className={`transition-all duration-300 ${
+                  hoveredIndex === index
+                    ? "opacity-100 translate-y-0 max-h-20"
+                    : "opacity-0 translate-y-2 max-h-0"
+                }`}
+              >
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    onClick={() => handleAccept(index)}
+                    size="sm"
+                    className="bg-green-600/20 text-green-700 rounded-lg hover:bg-green-600/30 transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <Check className="w-4 h-4 mr-1" />
+                    Accept
+                  </Button>
+                  <Button
+                    onClick={() => handleReject(index)}
+                    size="sm"
+                    className="bg-rose-600/20 text-rose-700 rounded-lg hover:bg-rose-600/30 transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Reject
+                  </Button>
+                </div>
               </div>
             )}
-          </h1>
+          </div>
         </div>
       ))}
+
+      {loading && (
+        <div className="flex justify-start">
+          <div className="bg-neutral-900 text-white px-4 py-3 rounded-xl">
+            <div className="flex gap-2">
+              <div
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

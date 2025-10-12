@@ -1,7 +1,5 @@
-import AiInput from "@/app/(test)/test/components/Input";
 import NotepageClient from "@/components/components/NotepageClient";
 import PageWrapper from "@/components/page-wrapper";
-import RichTextEditor from "@/components/righ-text-editor";
 import { getNoteById } from "@/server/note";
 import { JSONContent, Editor } from "@tiptap/react";
 

@@ -16,10 +16,10 @@ export async function fetchFromOpenrouter(text : {text: Promise<FetchResponse>})
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-        },
+      },
         
         body: JSON.stringify({
-          model: "deepseek/deepseek-r1-0528:free",
+          model: "nousresearch/deephermes-3-llama-3-8b-preview:free",
           messages: [
             { 
               role: "system",
