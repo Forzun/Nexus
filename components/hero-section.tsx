@@ -1,154 +1,74 @@
-import React from "react";
-import { Mail, SendHorizonal } from "lucide-react";
+"use client";
+import { Logo } from "@/components/logo";
+import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { TextEffect } from "@/components/ui/text-effect";
-import { AnimatedGroup } from "@/components/ui/animated-group";
-import { HeroHeader } from "./header";
-import { LogoCloud } from "./logo-cloud";
-import type { Variants } from "framer-motion";
+import { Menu, SendHorizonal, SendHorizontal, X } from "lucide-react";
+import Image from "next/image";
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, filter: "blur(12px)", y: 12 },
-  visible: {
-    opacity: 1,
-    filter: "blur(0px)",
-    y: 0,
-    transition: { type: "spring", bounce: 0.3, duration: 1.5 },
-  },
-};
+const menuItems = [
+  { name: "Features", href: "#" },
+  { name: "Solution", href: "#" },
+  { name: "Pricing", href: "#" },
+  { name: "About", href: "#" },
+];
 
 export default function HeroSection() {
+  const [menuState, setMenuState] = useState(false);
   return (
     <>
-      <HeroHeader />
+      <main>
+        <div
+          aria-hidden
+          className="z-2 absolute inset-0 isolate hidden opacity-50 contain-strict lg:block "
+        >
+          <div className="w-140 h-320 -translate-y-87.5 absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
+          <div className="h-320 absolute left-0 top-0 w-60 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
+          <div className="h-320 -translate-y-87.5 absolute left-0 top-0 w-60 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
+        </div>
 
-      <main className="overflow-hidden [--color-primary-foreground:var(--color-white)] [--color-primary:var(--color-green-600)]">
-        <section>
-          <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-32 lg:pt-48">
-            <div className="relative z-10 mx-auto max-w-4xl text-center">
-              <TextEffect
-                preset="fade-in-blur"
-                speedSegment={0.3}
-                as="h1"
-                className="text-balance text-5xl font-medium md:text-6xl"
-              >
+        <section className="bg-muted/50 dark:bg-background overflow-hidden md:pt-20"> 
+          <div className="relative mx-auto max-w-5xl px-6 pt-28 lg:pt-24">
+            <div className="relative z-10 mx-auto max-w-2xl text-center">
+              <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">
                 Notes That Work As Hard As You Do
-              </TextEffect>
-              <TextEffect
-                per="line"
-                preset="fade-in-blur"
-                speedSegment={0.3}
-                delay={0.5}
-                as="p"
-                className="mx-auto mt-6 max-w-2xl text-pretty text-lg"
-              >
-               The digital workspace where creativity meets organization, helping you capture inspiration and turn ideas into reality.
-              </TextEffect>
+              </h1>
+              <p className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl">
+                The digital workspace where creativity meets organization,
+                helping you capture inspiration and turn ideas into reality.
+              </p>
 
-              <AnimatedGroup
-                variants={{
-                  container: {
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.75,
-                      },
-                    },
-                  },
-                  item: itemVariants,
-                }}
-                className="mt-12"
-              >
-                <form action="" className="mx-auto max-w-sm">
-                  <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-[calc(var(--radius)+0.5rem)] border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
-                    <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
+              <Button size="lg">
+                <Link href="/login" className="group flex items-center gap-2 ">
+                  <span className="md:text-base text-sm">Get Started</span>
+                  <SendHorizontal className="transition-all duration-300 ease-in-out group-hover:translate-x-3" />
+                </Link>
+              </Button>
+            </div>
+          </div>
 
-                    <input
-                      placeholder="Your mail address"
-                      className="h-12 w-full bg-transparent pl-12 focus:outline-none"
-                      type="email"
-                    />
-
-                    <div className="md:pr-1.5 lg:pr-0">
-                      <Button
-                        aria-label="submit"
-                        size="sm"
-                        className="rounded-(--radius)"
-                      >
-                        <span className="hidden md:block">Get Started</span>
-                        <SendHorizonal
-                          className="relative mx-auto size-5 md:hidden"
-                          strokeWidth={2}
-                        />
-                      </Button>
-                    </div>
-                  </div>
-                </form>
-
-                
-              </AnimatedGroup>
+          <div className="mx-auto 2xl:max-w-7xl">
+            <div className="perspective-distant">
+              <div className="lg:h-176 rotate-x-20 mask-b-from-55% border-1 border-neutral-800/40 rounded-2xl mask-b-to-100% mask-r-from-75% skew-x-12 ">
+                <Image
+                  className="rounded-(--radius) border shadow-xl dark:hidden"
+                  src="/card.png"
+                  alt="nexus hero section"
+                  width={2880}
+                  height={2074}
+                />
+                <Image
+                  className="rounded-(--radius) hidden border shadow-xl dark:block"
+                  src="/home.png"
+                  alt="nexus hero section"
+                  width={2880}
+                  height={2074}
+                />
+              </div>
             </div>
           </div>
         </section>
-        <LogoCloud />
       </main>
     </>
   );
 }
-
-const AppComponent = () => {
-  return (
-    <div className="relative space-y-3 rounded-[1rem] bg-white/5 p-4">
-      <div className="flex items-center gap-1.5 text-orange-400">
-        <svg
-          className="size-5"
-          xmlns="http://www.w3.org/2000/svg"
-          width="1em"
-          height="1em"
-          viewBox="0 0 32 32"
-        >
-          <g fill="none">
-            <path
-              fill="#ff6723"
-              d="M26 19.34c0 6.1-5.05 11.005-11.15 10.641c-6.269-.374-10.56-6.403-9.752-12.705c.489-3.833 2.286-7.12 4.242-9.67c.34-.445.689 3.136 1.038 2.742c.35-.405 3.594-6.019 4.722-7.991a.694.694 0 0 1 1.028-.213C18.394 3.854 26 10.277 26 19.34"
-            ></path>
-            <path
-              fill="#ffb02e"
-              d="M23 21.851c0 4.042-3.519 7.291-7.799 7.144c-4.62-.156-7.788-4.384-7.11-8.739C9.07 14.012 15.48 10 15.48 10S23 14.707 23 21.851"
-            ></path>
-          </g>
-        </svg>
-        <div className="text-sm font-medium">Steps</div>
-      </div>
-      <div className="space-y-3">
-        <div className="text-foreground border-b border-white/10 pb-3 text-sm font-medium">
-          This year, you're walking more on average than you did in 2023.
-        </div>
-        <div className="space-y-3">
-          <div className="space-y-1">
-            <div className="space-x-1">
-              <span className="text-foreground align-baseline text-xl font-medium">
-                8,081
-              </span>
-              <span className="text-muted-foreground text-xs">Steps/day</span>
-            </div>
-            <div className="flex h-5 items-center rounded bg-gradient-to-l from-emerald-400 to-indigo-600 px-2 text-xs text-white">
-              2024
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="space-x-1">
-              <span className="text-foreground align-baseline text-xl font-medium">
-                5,412
-              </span>
-              <span className="text-muted-foreground text-xs">Steps/day</span>
-            </div>
-            <div className="text-foreground bg-muted flex h-5 w-2/3 items-center rounded px-2 text-xs dark:bg-white/20">
-              2023
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

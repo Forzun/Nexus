@@ -18,7 +18,7 @@ export async function AppSidebar({
   const notebook = await getNotebooks();
 
   const data = {
-    versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+    versions: ["1.0.1"],
     navMain:
       notebook.data?.map((notebook) => ({
         title: notebook.name,
@@ -41,8 +41,8 @@ export async function AppSidebar({
         <SearchForm />
       </SidebarHeader>
       <SidebarContent className="gap-0">
-       <SidebarData data={data} />
-       </SidebarContent>
+        <SidebarData data={data} />
+      </SidebarContent>
       <SidebarRail />
     </Sidebar>
   );
