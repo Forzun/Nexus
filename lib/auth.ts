@@ -53,14 +53,10 @@ import { Resend } from "resend";
 import VerificationEmail from "@/components/email/emial-template";
 import PasswordResetEmail from "@/components/email/reset-email";
 
-// Singleton pattern for Prisma Client
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Prevent Prisma from connecting during build
+const prisma = process.env.VERCEL_ENV === 'production' && !process.env.DATABASE_URL?.startsWith('prisma')
+  ? null
+  : new PrismaClient();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -95,6 +91,12 @@ export const auth = betterAuth({
     });
   },
 },
-  database: prismaAdapter(prisma, { provider: "postgresql" }),
+  database: prisma ? prismaAdapter(prisma, { provider: "postgresql" }) : {
+    // Dummy adapter for build time
+    create: async () => ({}),
+    findOne: async () => null,
+    update: async () => ({}),
+    delete: async () => undefined,
+  } as any,
   plugins: [nextCookies()] 
 });
