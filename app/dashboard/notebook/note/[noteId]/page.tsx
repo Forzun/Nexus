@@ -25,7 +25,7 @@ export default async function Notepage({ params }: { params: NoteProps }) {
         },
       ]}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-3 w-full ">
         <NotepageClient
           noteId={noteId}
           content={note.data?.content as JSONContent[]}

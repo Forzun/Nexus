@@ -52,7 +52,7 @@ export default function GetUser({
     };
 
     // processMessage();
-  }, [user.length]); 
+  }, [user.length]);
 
   const handleReject = (index: number) => {
     setMessage((prev) =>

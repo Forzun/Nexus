@@ -64,13 +64,13 @@ export default function CreateNotebookButton() {
         toast.success("Notebook created sucessfully");
         setIsOpen(false);
         router.refresh();
-      }else{ 
+      } else {
         toast.error(response.message);
       }
     } catch (error) {
-        toast.error("failed to create notebook")
+      toast.error("failed to create notebook");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   }
 
@@ -102,11 +102,19 @@ export default function CreateNotebookButton() {
               )}
             />
             <Button disabled={loading} type="submit">
-                {loading ? <Loader2 className="size-4 animate-spin" /> : "Create"}
+              {loading ? <Loader2 className="size-4 animate-spin" /> : "Create"}
             </Button>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
   );
+}
+
+
+function CreateNoteButton(){ 
+  
+  return <div>
+    
+  </div>
 }

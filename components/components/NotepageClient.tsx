@@ -15,12 +15,12 @@ export default function NotepageClient({
   const [editor, setEditor] = useState<Editor | undefined>();
 
   return (
-    <div className="flex gap-3">
+    <div className="gap-3 w-full flex"> 
       <div>
         <RichTextEditor
           content={content}
           noteId={noteId}
-          onReady={setEditor} // ✅ pass editor instance to state
+          onReady={setEditor}
         />
       </div>
 
